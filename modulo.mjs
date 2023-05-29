@@ -1,8 +1,14 @@
 import fs from "fs";
+import url from "url";
 import http, { STATUS_CODES } from 'http';
-
+const webEndereco = 'https://www.siteonline.com/catalogo?produtos=cadeira';
+const convertUrl = new url.URL(webEndereco);
 const port = 3000;
-
+console.log(convertUrl.hostname);
+console.log(convertUrl.port);
+console.log(convertUrl.pathname);
+console.log(convertUrl.search);
+console.log(convertUrl.searchParams.get('produtos'));
 async function writeResponseServer(port) {
     try {
         let x = 10;
