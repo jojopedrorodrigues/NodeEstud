@@ -1,5 +1,5 @@
 import fs from "fs";
-import http from 'http';
+import http, { STATUS_CODES } from 'http';
 
 const port = 3000;
 
@@ -19,8 +19,8 @@ async function writeResponseServer(port) {
 }
 function connectServer(port) {
     const server = http.createServer((requisition, response) => {
-        response.write('Oi Http server');
-        response.end();
+        response.setHeader('Content-Type' , 'text/html' );
+        response.end('<h1>Server online</h1>');
     });
 
     server.listen(port,
