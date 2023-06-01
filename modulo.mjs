@@ -2,13 +2,36 @@ import fs from "fs";
 import url from "url";
 import http, { STATUS_CODES } from 'http';
 const webEndereco = 'https://www.siteonline.com/catalogo?produtos=cadeira';
-const convertUrl = new url.URL(webEndereco);
+const novoDados = new url.URL(webEndereco);
 const port = 3000;
-console.log(convertUrl.hostname);
-console.log(convertUrl.port);
-console.log(convertUrl.pathname);
-console.log(convertUrl.search);
-console.log(convertUrl.searchParams.get('produtos'));
+
+function connectServer(port) {
+
+    const connect = http.createServer((req, callback) => {
+        const urlInfo = new url.URL(req.url, `http://${req.headers.host}`);
+        const nameTag = urlInfo.searchParams.get('name');
+
+        if (!nameTag) {
+            fs.readFile('page.html', (err, data) => {
+                callback.writeHead(200, { 'Content-Type': 'text/html' });
+                callback.write(data);
+                return callback.end();
+            })
+        } else {
+            fs.writeFile('save.txt', nameTag, (err, data) => {
+                callback.writeHead(302, { location: '/' })
+                return callback.end();
+            })
+
+
+        }
+
+    });
+
+    connect.listen(port, () => {
+        console.log(`Servidor rodando na porta ${port}`);
+    });
+}
 async function writeResponseServer(port) {
     try {
         let x = 10;
@@ -22,20 +45,6 @@ async function writeResponseServer(port) {
     catch (e) {
         console.error(e)
     }
-}
-function connectServer(port) {
-    const server = http.createServer((requisition, response) => {
-        response.setHeader('Content-Type' , 'text/html' );
-        response.end('<h1>Server online</h1>');
-    });
-
-    server.listen(port,
-        function () {
-            console.log('servidor rodando ' + port),
-                writeResponseServer(port);
-        }
-    );
-
 }
 
 
